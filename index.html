@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Cowork Training Course</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.7;
+    color: #1a1a2e;
+    background: #f8f9fc;
+    padding: 0;
+  }
+  .course-header {
+    background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+    color: white;
+    padding: 48px 32px 40px;
+    text-align: center;
+  }
+  .course-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .course-header .subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin-bottom: 16px;
+  }
+  .course-header .badges {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .badge {
+    background: rgba(255,255,255,0.2);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    backdrop-filter: blur(4px);
+  }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+  }
+  .day-nav {
+    display: flex;
+    gap: 8px;
+    margin: 24px 0 0;
+    position: sticky;
+    top: 0;
+    background: #f8f9fc;
+    padding: 12px 0;
+    z-index: 10;
+    flex-wrap: wrap;
+  }
+  .day-tab {
+    flex: 1;
+    min-width: 120px;
+    padding: 12px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    color: #555;
+  }
+  .day-tab:hover { border-color: #a29bfe; color: #6c5ce7; }
+  .day-tab.active {
+    background: #6c5ce7;
+    color: white;
+    border-color: #6c5ce7;
+  }
+  .day-tab small {
+    display: block;
+    font-weight: 400;
+    font-size: 0.75rem;
+    margin-top: 2px;
+    opacity: 0.8;
+  }
+  .day-content { display: none; }
+  .day-content.active { display: block; }
+  .day-header {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin: 20px 0;
+    border-left: 5px solid #6c5ce7;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .day-header h2 {
+    font-size: 1.35rem;
+    color: #6c5ce7;
+    margin-bottom: 6px;
+  }
+  .day-header .goal {
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .day-header .time {
+    display: inline-block;
+    margin-top: 8px;
+    background: #f0edff;
+    color: #6c5ce7;
+    padding: 3px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  .lesson {
+    background: white;
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .lesson h3 {
+    font-size: 1.15rem;
+    color: #2d3436;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .lesson h3 .icon { font-size: 1.3rem; }
+  .lesson h4 {
+    font-size: 1rem;
+    color: #6c5ce7;
+    margin: 16px 0 8px;
+  }
+  .lesson p, .lesson li {
+    color: #444;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+  }
+  .lesson ul, .lesson ol {
+    padding-left: 24px;
+    margin-bottom: 12px;
+  }
+  .lesson li { margin-bottom: 6px; }
+  .prompt-box {
+    background: #f0edff;
+    border: 1px solid #d5cff5;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 12px 0;
+    font-size: 0.9rem;
+    color: #4a3f8a;
+    line-height: 1.6;
+    position: relative;
+  }
+  .prompt-box::before {
+    content: "💬 PROMPT";
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #6c5ce7;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .try-it {
+    background: #e8f5e9;
+    border: 2px solid #a5d6a7;
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin: 16px 0;
+  }
+  .try-it::before {
+    content: "🎯 TRY IT YOURSELF";
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #2e7d32;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .try-it p, .try-it li { color: #2e5730; font-size: 0.9rem; }
+  .try-it ol, .try-it ul { padding-left: 22px; }
+  .tip {
+    background: #fff8e1;
+    border-left: 4px solid #ffc107;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 0.88rem;
+    color: #6d5600;
+  }
+  .tip::before {
+    content: "💡 TIP: ";
+    font-weight: 700;
+  }
+  .important {
+    background: #fff3e0;
+    border-left: 4px solid #ff9800;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 0.88rem;
+    color: #6d3a00;
+  }
+  .important::before {
+    content: "⚠️ IMPORTANT: ";
+    font-weight: 700;
+  }
+  .takeaways {
+    background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+    color: white;
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-top: 20px;
+  }
+  .takeaways h3 {
+    color: white;
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+  }
+  .takeaways ul { padding-left: 20px; }
+  .takeaways li {
+    color: rgba(255,255,255,0.95);
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 0.88rem;
+  }
+  th {
+    background: #6c5ce7;
+    color: white;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #eee;
+    color: #444;
+  }
+  tr:nth-child(even) td { background: #fafafe; }
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 12px 0;
+  }
+  .comparison > div {
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+  }
+  .comparison .before {
+    background: #ffebee;
+    border: 1px solid #ef9a9a;
+    color: #b71c1c;
+  }
+  .comparison .after {
+    background: #e8f5e9;
+    border: 1px solid #a5d6a7;
+    color: #1b5e20;
+  }
+  .comparison .label {
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .steps { counter-reset: step; }
+  .step {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+    align-items: flex-start;
+  }
+  .step-num {
+    background: #6c5ce7;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-text { font-size: 0.93rem; color: #444; }
+  .course-footer {
+    text-align: center;
+    margin-top: 32px;
+    padding: 20px;
+    color: #999;
+    font-size: 0.8rem;
+  }
+  @media (max-width: 600px) {
+    .comparison { grid-template-columns: 1fr; }
+    .course-header h1 { font-size: 1.5rem; }
+    .container { padding: 16px 14px 40px; }
+    .lesson { padding: 18px 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="course-header">
+  <h1>Claude Cowork Training Course</h1>
+  <p class="subtitle">A hands-on guide for non-technical users</p>
+  <div class="badges">
+    <span class="badge">3 Days</span>
+    <span class="badge">1-1.5 hrs/day</span>
+    <span class="badge">No coding required</span>
+  </div>
+</div>
+<div class="container">
+  <div class="lesson" style="margin-top: 20px;">
+    <h3><span class="icon">📋</span> Before You Start</h3>
+    <ul>
+      <li><strong>A paid Claude subscription</strong> — Pro, Max, Team, or Enterprise</li>
+      <li><strong>Claude Desktop app installed</strong> on your Mac or Windows computer</li>
+      <li><strong>An internet connection</strong> (required throughout)</li>
+      <li><strong>A practice folder</strong> — create a folder on your Desktop called "Cowork Practice" and put some random files in it (documents, spreadsheets, images — anything)</li>
+    </ul>
+  </div>
+  <div class="day-nav">
+    <div class="day-tab active" onclick="showDay(1)">Day 1<small>Setup &amp; First Tasks</small></div>
+    <div class="day-tab" onclick="showDay(2)">Day 2<small>Real-World Work</small></div>
+    <div class="day-tab" onclick="showDay(3)">Day 3<small>Power Features</small></div>
+    <div class="day-tab" onclick="showDay(4)">Reference<small>Quick Guide</small></div>
+  </div>
+
+  <!-- DAY 1 -->
+  <div class="day-content active" id="day1">
+    <div class="day-header">
+      <h2>Day 1: Getting Started &amp; Your First Tasks</h2>
+      <p class="goal">Understand what Cowork is, set it up, and complete your first real task.</p>
+      <span class="time">⏱ ~60–75 minutes</span>
+    </div>
+
+    <div class="lesson">
+      <h3><span class="icon">📖</span> Lesson 1.1 — What Is Claude Cowork?</h3>
+      <p>Think of Claude Cowork as a capable assistant sitting at your computer. Unlike regular Claude chat (where you go back and forth in conversation), Cowork can actually <strong>do work</strong> on your behalf — create files, organize folders, build documents, and pull together research.</p>
+      <h4>Chat vs. Cowork</h4>
+      <div class="comparison">
+        <div class="before">
+          <span class="label">💬 CHAT</span>
+          You ask, Claude answers. Like texting a smart friend. Claude describes how to do things.
+        </div>
+        <div class="after">
+          <span class="label">⚡ COWORK</span>
+          You describe what you need done, Claude plans and executes it. Claude actually does the work and delivers finished files.
+        </div>
+      </div>
+      <h4>What Cowork Is Great At</h4>
+      <ul>
+        <li>Organizing messy folders — sorting, renaming, categorizing files</li>
+        <li>Creating polished documents, slide decks, and spreadsheets</li>
+        <li>Summarizing and analyzing information across multiple files</li>
+        <li>Research and report writing</li>
+        <li>Repetitive tasks you do regularly (daily briefings, weekly reports)</li>
+      </ul>
+      <h4>What Cowork Is NOT</h4>
+      <ul>
+        <li>It's not a coding tool (that's Claude Code)</li>
+        <li>It's still in "research preview" — very capable but still being improved</li>
+        <li>It only works while the Claude Desktop app is open on your computer</li>
+      </ul>
+    </div>
+
+    <div class="lesson">
+      <h3><span class="icon">⚙️</span> Lesson 1.2 — Setting Up Cowork</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Open the Claude Desktop App.</strong> Launch it on your computer. You'll see the familiar chat interface.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Find the Cowork Tab.</strong> Look at the top of the app or in the left sidebar. You'll see tabs including "Chat" and "Cowork" (or "Tasks"). Click <strong>Cowork</strong>.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Give Claude Access to a Folder.</strong> When you start a task, Claude will ask you to select a folder. Choose your "Cowork Practice" folder to experiment safely.</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Understand the Safety Features</strong> (see below).</div></div>
+      </div>
+      <h4>Safety Features You Should Know</h4>
+      <ul>
+        <li><strong>Claude always asks permission before deleting files.</strong> You'll see a prompt and must click "Allow."</li>
+        <li><strong>Claude only accesses folders you specifically grant.</strong> It cannot see your entire computer.</li>
+        <li><strong>You can watch everything Claude does in real time.</strong> Progress indicators show each step.</li>
+        <li><strong>You can jump in and redirect Claude at any time.</strong> You're always in control.</li>
+        <li><strong>Your conversation history stays on your computer</strong> — not on Anthropic's servers.</li>
+      </ul>
+    </div>
+
+    <div class="lesson">
+      <h3><span class="icon">🚀</span> Lesson 1.3 — Your First Cowork Task</h3>
+      <p>Let's start with something simple and satisfying: organizing a folder.</p>
+      <div class="try-it">
+        <p><strong>Exercise: Organize a Folder</strong></p>
+        <ol>
+          <li>Switch to Cowork mode in Claude Desktop.</li>
+          <li>Select your "Cowork Practice" folder.</li>
+          <li>Type the prompt below.</li>
+          <li><strong>Watch what happens:</strong> Claude will scan your files, create a plan, and present it.</li>
+          <li><strong>Approve or adjust:</strong> If the plan looks good, tell Claude to proceed. If not, just say what you'd change.</li>
+        </ol>
+        <div class="prompt-box">Help me organize this folder. Scan the contents and propose a plan: what categories/folders to create, how files should be sorted, and any naming conventions to apply. Show me the plan before making changes. Only proceed after I approve.</div>
+      </div>
+      <p><strong>What you just learned:</strong> The "describe → review → approve" pattern. This is the foundation of everything in Cowork. You'll use this pattern constantly.</p>
+    </div>
+
+    <div class="lesson">
+      <h3><span class="icon">✍️</span> Lesson 1.4 — Writing Better Prompts</h3>
+      <p>The quality of Cowork's output depends heavily on how you describe what you need.</p>
+      <h4>Be Specific About the Outcome</h4>
+      <div class="comparison">
+        <div class="before">
+          <span class="label">❌ VAGUE</span>
+          "Make me a document about our team meeting."
+        </div>
+        <div class="after">
+          <span class="label">✅ SPECIFIC</span>
+          "Create a Word document summarizing our team meeting. Include: date, attendees, key decisions, and action items with owners and deadlines."
+        </div>
+      </div>
+      <h4>Tell Claude What Format You Want</h4>
+      <ul>
+        <li>"Create a <strong>Word document</strong> (.docx)..."</li>
+        <li>"Build a <strong>PowerPoint presentation</strong> with 10 slides..."</li>
+        <li>"Make an <strong>Excel spreadsheet</strong> with formulas that calculate..."</li>
+        <li>"Generate a <strong>PDF report</strong>..."</li>
+      </ul>
+      <h4>Ask Claude to Show Its Plan First</h4>
+      <p>For important tasks, always include: <em>"Show me your approach before you start"</em> or <em>"Present a plan before executing."</em></p>
+      <h4>Give Context About Your Audience</h4>
+      <ul>
+        <li>"This is for my CEO — keep it concise and executive-level."</li>
+        <li>"This will be shared with a non-technical team — avoid jargon."</li>
+        <li>"This is an internal draft — focus on accuracy over polish."</li>
+      </ul>
+    </div>
+
+    <div class="lesson">
+      <h3><span class="icon">📄</span> Lesson 1.5 — Create a Document</h3>
+      <div class="try-it">
+        <p><strong>Exercise: Create a Meeting Summary</strong></p>
+        <ol>
+          <li>In Cowork mode, type the prompt below.</li>
+          <li>Let Claude work. Watch the progress indicators.</li>
+          <li>When finished, open the document from your folder and review it.</li>
+        </ol>
+        <div class="prompt-box">Create a Word document called "Weekly Team Update." Include a header with today's date, a section for "Key Accomplishments" with 3 bullet points (make up plausible examples), a section for "Upcoming Priorities" with 3 items, and a section for "Blockers or Risks" with 2 items. Use professional formatting with a clean, simple design. Save it to my folder.</div>
+      </div>
+      <p>🎉 <strong>Congratulations!</strong> You've completed Day 1. You can now set up Cowork, give it tasks, review its plans, and create professional documents.</p>
+    </div>
+
+    <div class="takeaways">
+      <h3>📌 Day 1 Key Takeaways</h3>
+      <ul>
+        <li>Cowork = Claude that <em>does work</em>, not just answers questions</li>
+        <li>Always grant access to a specific folder — Claude can only see what you allow</li>
+        <li>Use the pattern: <strong>describe → review → approve (or redirect)</strong></li>
+        <li>Be specific in your prompts: describe the outcome, format, and audience</li>
+        <li>Claude will always ask before deleting anything</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- DAY 2 -->
+  <div class="day-content" id="day2">
+    <div class="day-header">
+      <h2>Day 2: Real-World Tasks &amp; Working With Your Files</h2>
+      <p class="goal">Use Cowork for practical daily work — analyzing files, creating presentations, and multi-step projects.</p>
+      <span class="time">⏱ ~60–90 minutes</span>
+    </div>
+
+    <div class="lesson">
+      <h3><span class="icon">📁</span> Lesson 2.1 — Working With Your Existing Files</h3>
+      <p>Cowork really shines when it works with files you already have. Here are three patterns:</p>
+      <h4>Analyzing a Document</h4>
+      <div class="prompt-box">Read the document [filename] in this folder. Give me a summary of the key points in plain language. Then create a new Word document called "Summary of [filename]" with: a 3-sentence executive summary at the top, followed by the main points organized by topic, and any action items or recommendations at the bottom.</div>
+      <h4>Working With Spreadsheets</h4>
+      <div class="prompt-box">Open the spreadsheet [filename]. Tell me what data is in it — what columns are there, how many rows, and what the data appears to be about. Then create a clean summary of the key metrics or totals.</div>
+      <h4>Working With Multiple Files</h4>
+      <div class="prompt-box">Look at all the documents in this folder. Create a single summary document that pulls out the key themes, decisions, and action items across all of them. Organize it chronologically.</div>
+      <div class="try-it">
+        <p><strong>Exercise:</strong> Pick a real document or spreadsheet from your work. Put it in your Cowork folder and ask Claude to summarize, analyze, or reorganize the information.</p>
+      </div>
+    </div>
+
+    <div class="lesson">
+      <h3><span class="icon">📊</span> Lesson 2.2 — Creating Presentations</h3>
+      <p>One of Cowork's most popular uses. Here's the recipe for a great presentation prompt:</p>
+      <h4>Include These Five Elements</h4>
+      <ol>
+        <li><strong>Topic and purpose</strong> — What is this about and why?</li>
+        <li><strong>Audience</strong> — Who will see this?</li>
+        <li><strong>Number of slides</strong> — Give a target (e.g., "8–10 slides")</li>
+        <li><strong>Structure</strong> — What should the flow look like?</li>
+        <li><strong>Style preferences</strong> — Professional? Minimal? Data-heavy?</li>
+      </ol>
+      <div class="prompt-box">Create a PowerPoint presentation called "Q1 Team Review." It should have 8 slides:<br><br>
+1. Title slide with the presentation name and today's date<br>
+2. Agenda slide listing what we'll cover<br>
+3. Key Metrics — use placeholder numbers for revenue, customer count, and satisfaction score<br>
+4. Wins — 3 major accomplishments this quarter<br>
+5. Challenges — 2 areas where we struggled<br>
+6. Lessons Learned — what we'd do differently<br>
+7. Next Quarter Priorities — top 3 focus areas<br>
+8. Q&amp;A / Discussion closing slide<br><br>
+Keep the design clean and professional. Use a blue and white color scheme. Save it to my folder.</div>
+      <div class="try-it">
+        <p><strong>Exercise:</strong> Use the prompt above (or customize it to your own topic) and let Cowork build you a deck. Open it when done and review.</p>
+      </div>
+      <div class="tip">If you want changes, don't start over. Just tell Claude: <em>"On slide 4, add a fourth bullet about customer retention"</em> or <em>"Change the color scheme to green and gray."</em></div>
+    </div>
+
+    <div class="lesson">
+      <h3><span class="icon">🔗</span> Lesson 2.3 — Multi-Step Projects</h3>
+      <p>This is where Cowork gets really powerful. Describe a complex outcome and Claude breaks it down automatically.</p>
+      <h4>How It Works</h4>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Plans</strong> — Breaks the work into subtasks</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Coordinates</strong> — May run multiple subtasks in parallel using "sub-agents"</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Executes</strong> — Works through each step, creating files and outputs</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Delivers</strong> — Saves finished work to your folder</div></div>
+      </div>
+      <div class="prompt-box">I need a briefing document on [topic of your choice]. Here's what I need:<br>
+1. Research the topic using web search<br>
+2. Create a Word document with an executive summary, 3–4 key trends with explanations, and a "What This Means for Us" section<br>
+3. Keep it under 3 pages<br>
+4. Use professional formatting with headers<br><br>
+Show me your research plan first before writing the report.</div>
+      <div class="try-it">
+        <p><strong>Exercise — choose one:</strong></p>
+        <p><strong>Option A (Travel Planning):</strong> "Research the top 5 family-friendly restaurants in [your city]. Create a Word document with the name, address, price range, what they're known for, and a recommendation for which to try first."</p>
+        <p><strong>Option B (Competitive Research):</strong> "Research [a company you're interested in]. Create a one-page summary with: what they do, who their customers are, their recent news, and their main competitors."</p>
+      </div>
+    </div>
+
+    <div class="lesson">
+      <h3><span class="icon">🎛️</span> Lesson 2.4 — Steering and Correcting Mid-Task</h3>
+      <p>You don't have to wait until Claude is finished. At any point during a task, you can:</p>
+      <ul>
+        <li><strong>Redirect:</strong> "Actually, focus more on the budget section and less on the timeline."</li>
+        <li><strong>Add information:</strong> "By the way, our budget is $50,000 — include that number."</li>
+        <li><strong>Pause and review:</strong> "Stop here and show me what you have so far before continuing."</li>
+        <li><strong>Change course:</strong> "This isn't quite right. Instead of a report, make it a bulleted email I can send to my team."</li>
+      </ul>
+      <p>Claude will adjust without losing the work it's already done. Think of it like working alongside a real colleague.</p>
+    </div>
+
+    <div class="takeaways">
+      <h3>📌 Day 2 Key Takeaways</h3>
+      <ul>
+        <li>Cowork can read and analyze your existing files — documents, spreadsheets, PDFs</li>
+        <li>For presentations, include: topic, audience, slide count, structure, and style</li>
+        <li>Complex tasks get automatically broken into steps — watch progress in real time</li>
+        <li>You can redirect Claude mid-task without starting over</li>
+        <li>Put files you want Claude to work with in the folder you've granted access to</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- DAY 3 -->
+  <div class="day-content" id="day3">
+    <div class="day-header">
+      <h2>Day 3: Power Features &amp; Building Your Workflow</h2>
+      <p class="goal">Learn connectors, scheduled tasks, global instructions, and plugins to make Cowork a daily productivity tool.</p>
+      <span class="time">⏱ ~60–90 minutes</span>
+    </div>
+
+    <div class="lesson">
+      <h3><span class="icon">🛠️</span> Lesson 3.1 — Global &amp; Folder Instructions</h3>
+      <p>Instead of repeating the same context every time, set <strong>permanent instructions</strong> that Claude follows automatically.</p>
+      <h4>Global Instructions (apply to every session)</h4>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-text">Go to <strong>Settings → Cowork</strong> in Claude Desktop</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text">Click <strong>"Edit"</strong> next to Global Instructions</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text">Type your instructions (see example below)</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-text">Click <strong>Save</strong></div></div>
+      </div>
+      <div class="prompt-box" style="background: #e3f2fd; border-color: #90caf9; color: #1a4a7a;">I am a VP of Operations at a mid-size tech company. I prefer concise, professional language. When creating documents, use a clean format with headers and minimal jargon. My preferred file format for reports is Word (.docx). Always show me your plan before making changes to existing files.</div>
+      <h4>Folder Instructions (apply to a specific folder)</h4>
+      <p>Useful when different projects have different needs. For example, in a "Q1 Reports" folder:</p>
+      <div class="prompt-box" style="background: #e3f2fd; border-color: #90caf9; color: #1a4a7a;">This folder contains Q1 2026 financial reports. All documents should use our standard template: company header, date in the header, and page numbers in the footer. Numbers should be in USD format with commas.</div>
+      <div class="try-it">
+        <p><strong>Exercise:</strong> Go to Settings → Cowork and write 2–3 sentences about who you are, what kind of work you do, and how you prefer things formatted. This small investment improves every future task.</p>
+      </div>
+    </div>
+
+    <div class="lesson">
+      <h3><span class="icon">🔌</span> Lesson 3.2 — Connectors: Linking Your Other Tools</h3>
+      <p>Connectors let Claude pull information from other apps you already use — without you copy-pasting anything.</p>
+      <h4>How to Browse Connectors</h4>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-text">Go to <strong>Settings → Connectors → Browse Connectors</strong></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text">You'll see two tabs: <strong>Web</strong> and <strong>Desktop Extensions</strong></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text">Enable the ones relevant to your work</div></div>
+      </div>
+      <h4>Most Useful Connectors for Non-Technical Users</h4>
+      <ul>
+        <li><strong>Google Drive</strong> — Claude can search and read your Docs and Sheets</li>
+        <li><strong>Gmail</strong> — Claude can search your email for context</li>
+        <li><strong>Google Calendar</strong> — Claude can check your schedule</li>
+        <li><strong>Slack</strong> — Claude can read Slack channels for context</li>
+        <li><strong>Notion</strong> — Claude can access your Notion workspace</li>
+      </ul>
+      <h4>Claude in Chrome (Browser Extension)</h4>
+      <p>This lets Claude interact with websites — filling forms, pulling data from web pages, or researching across multiple sites.</p>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-text">Install "Claude in Chrome" from the Chrome Web Store</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text">In Claude Desktop, click your initials (bottom left) → enable Chrome Connector</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text">When starting a task, enable "Claude in Chrome" in the Connectors dropdown</div></div>
+      </div>
+      <div class="important">The Chrome connector only works with Haiku 4.5, Sonnet 4.5, or Opus 4.5 models. Selecting a different model will disable it.</div>
+      <div class="try-it">
+        <p><strong>Exercise:</strong> Enable Google Drive (or another connector relevant to you), then try:</p>
+        <div class="prompt-box">Search my Google Drive for any documents related to [a project name]. Summarize what you find and list the most relevant files.</div>
+      </div>
+    </div>
+
+    <div class="lesson">
+      <h3><span class="icon">⏰</span> Lesson 3.3 — Scheduled Tasks: Put It on Autopilot</h3>
+      <p>Set up tasks that run automatically — daily, weekly, or on any schedule you choose. This is one of Cowork's most powerful features.</p>
+      <h4>How to Create a Scheduled Task</h4>
+      <p><strong>Method 1:</strong> In any Cowork task, type <strong>/schedule</strong> — Claude walks you through setup.</p>
+      <p><strong>Method 2:</strong> Click <strong>"Scheduled"</strong> in the left sidebar to view, create, and manage tasks.</p>
+      <div class="important">Your computer must be awake and the Claude Desktop app must be open for scheduled tasks to run. If your computer is asleep, Cowork will run the task when you next open the app.</div>
+      <h4>Practical Examples</h4>
+      <p><strong>Daily Morning Briefing:</strong></p>
+      <div class="prompt-box">/schedule<br><br>Every weekday morning, check my Gmail and Google Calendar. Create a one-page briefing document with: today's meetings and key deadlines, any urgent emails that need attention, and a suggested priority order for my day. Save it to my "Daily Briefings" folder.</div>
+      <p><strong>Weekly File Cleanup:</strong></p>
+      <div class="prompt-box">/schedule<br><br>Every Friday at 4 PM, scan my Downloads folder. Move documents to "Documents," images to "Images," and anything older than 30 days to "Archive." Give me a summary of what was moved.</div>
+      <p><strong>Weekly Status Report Template:</strong></p>
+      <div class="prompt-box">/schedule<br><br>Every Friday, create a Word document called "Week of [date] Status Update." Include sections for: completed items, in-progress work, and next week's priorities. Use placeholder content I can fill in. Save to my "Reports" folder.</div>
+      <div class="try-it">
+        <p><strong>Exercise:</strong> Type <strong>/schedule</strong> in Cowork and create a simple recurring task — a daily file organization or a weekly report template.</p>
+      </div>
+      <div class="tip">After the first run, Claude may rewrite your prompt to be more precise based on what it learned. This is normal and usually makes future runs better.</div>
+    </div>
+
+    <div class="lesson">
+      <h3><span class="icon">🧩</span> Lesson 3.4 — Plugins: Pre-Built Superpowers</h3>
+      <p>Plugins are pre-configured packages that make Claude instantly good at specific types of work. Think of them as "skill packs."</p>
+      <h4>What's Inside a Plugin</h4>
+      <ul>
+        <li><strong>Skills</strong> — Domain knowledge Claude draws on automatically</li>
+        <li><strong>Slash commands</strong> — Quick actions triggered by typing "/" (like /schedule)</li>
+        <li><strong>Connectors</strong> — Links to relevant tools and data sources</li>
+        <li><strong>Sub-agents</strong> — Specialized mini-assistants for specific subtasks</li>
+      </ul>
+      <h4>Available Plugins (as of February 2026)</h4>
+      <table>
+        <tr><th>Plugin</th><th>Best For</th></tr>
+        <tr><td>Productivity</td><td>Task management, calendars, daily workflows</td></tr>
+        <tr><td>Sales</td><td>CRM integration, prospect research, call prep</td></tr>
+        <tr><td>Legal</td><td>Contract analysis, compliance, regulatory research</td></tr>
+        <tr><td>Finance</td><td>Financial modeling, reporting, data analysis</td></tr>
+        <tr><td>Marketing</td><td>Campaign planning, content creation, analytics</td></tr>
+        <tr><td>HR</td><td>Job descriptions, offer letters, policy documents</td></tr>
+        <tr><td>Engineering</td><td>Technical docs, project management</td></tr>
+        <tr><td>Data Analysis</td><td>Database queries, visualization, insights</td></tr>
+        <tr><td>Enterprise Search</td><td>Find info across your company's tools</td></tr>
+        <tr><td>Research</td><td>Deep research, competitive analysis</td></tr>
+        <tr><td>Design</td><td>Creative briefs, brand guidelines</td></tr>
+      </table>
+      <h4>How to Install a Plugin</h4>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-text">Go to <strong>Settings → Customize</strong> (or Plugins) in Claude Desktop</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text">Browse available plugins</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text">Click to install. They activate automatically.</div></div>
+      </div>
+      <div class="try-it">
+        <p><strong>Exercise:</strong> Install the <strong>Productivity</strong> plugin. Then ask Claude:</p>
+        <div class="prompt-box">What slash commands are available from my installed plugins?</div>
+      </div>
+    </div>
+
+    <div class="lesson">
+      <h3><span class="icon">🗓️</span> Lesson 3.5 — Building Your Daily Workflow</h3>
+      <p>Here's a framework for making Cowork part of your routine:</p>
+      <h4>Morning Routine (5 minutes)</h4>
+      <ol>
+        <li>Open Claude Desktop</li>
+        <li>Let your scheduled morning briefing run</li>
+        <li>Review the briefing and adjust your priorities</li>
+      </ol>
+      <h4>During the Day (as needed)</h4>
+      <ul>
+        <li>"Summarize this 20-page document in one page"</li>
+        <li>"Create a slide deck for my 2 PM meeting"</li>
+        <li>"Draft a professional response to this email" (paste the email in)</li>
+        <li>"Analyze this spreadsheet and highlight the top 10 customers by revenue"</li>
+      </ul>
+      <h4>End of Day / Weekly</h4>
+      <ul>
+        <li>Let scheduled cleanup tasks run</li>
+        <li>Review auto-generated weekly report templates and customize before sending</li>
+      </ul>
+      <h4>Prompt Templates to Keep Handy</h4>
+      <p><strong>Quick Document Summary:</strong></p>
+      <div class="prompt-box">Read [filename] and give me a 5-bullet summary of the most important points.</div>
+      <p><strong>Meeting Prep:</strong></p>
+      <div class="prompt-box">I have a meeting about [topic] in one hour. Create a one-page prep document with: background on the topic, 3 questions I should ask, and key points I should raise.</div>
+      <p><strong>Email Draft:</strong></p>
+      <div class="prompt-box">Draft a professional email to [recipient] about [topic]. Tone should be [friendly/formal/urgent]. Key points to include: [list them].</div>
+      <p><strong>Data Analysis:</strong></p>
+      <div class="prompt-box">Open [spreadsheet name]. Tell me: what are the top trends? Are there any outliers or concerns? Create a summary table of the key findings.</div>
+    </div>
+
+    <div class="takeaways">
+      <h3>📌 Day 3 Key Takeaways</h3>
+      <ul>
+        <li>Global instructions save you from repeating context every time</li>
+        <li>Connectors link Claude to your tools — Gmail, Drive, Slack, Calendar, etc.</li>
+        <li>Scheduled tasks automate recurring work — daily briefings, weekly reports, file cleanup</li>
+        <li>Plugins give Claude pre-built expertise for specific job functions</li>
+        <li>Build a simple morning / during-the-day / end-of-day routine for maximum value</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- REFERENCE -->
+  <div class="day-content" id="day4">
+    <div class="day-header">
+      <h2>Quick Reference Card</h2>
+      <p class="goal">Everything you need at a glance — bookmark this page.</p>
+    </div>
+
+    <div class="lesson">
+      <h3><span class="icon">⚡</span> Cowork Essentials</h3>
+      <table>
+        <tr><th>What</th><th>How</th></tr>
+        <tr><td>Switch to Cowork</td><td>Click "Cowork" tab in Claude Desktop</td></tr>
+        <tr><td>Grant file access</td><td>Select a folder when starting a task</td></tr>
+        <tr><td>Schedule a task</td><td>Type <strong>/schedule</strong> in a Cowork task</td></tr>
+        <tr><td>View scheduled tasks</td><td>Click "Scheduled" in the left sidebar</td></tr>
+        <tr><td>Set global instructions</td><td>Settings → Cowork → Edit Global Instructions</td></tr>
+        <tr><td>Browse connectors</td><td>Settings → Connectors → Browse Connectors</td></tr>
+        <tr><td>Install plugins</td><td>Settings → Customize (or Plugins)</td></tr>
+      </table>
+    </div>
+
+    <div class="lesson">
+      <h3><span class="icon">🧪</span> Prompt Formula</h3>
+      <p style="font-size: 1rem; font-weight: 600; color: #6c5ce7; margin-bottom: 10px;">[Action] + [Format] + [Details] + [Audience] + [Guardrails]</p>
+      <div class="prompt-box">Create a Word document <em>(action + format)</em> summarizing our Q1 results, including revenue, customer count, and NPS <em>(details)</em>. This is for our board meeting <em>(audience)</em>. Show me your plan before writing <em>(guardrail)</em>.</div>
+    </div>
+
+    <div class="lesson">
+      <h3><span class="icon">🔧</span> Troubleshooting</h3>
+      <table>
+        <tr><th>Problem</th><th>Solution</th></tr>
+        <tr><td>Cowork tab not showing</td><td>Update Claude Desktop to the latest version</td></tr>
+        <tr><td>Task stopped mid-way</td><td>Make sure the app stayed open and your computer didn't sleep</td></tr>
+        <tr><td>Scheduled task didn't run</td><td>Computer must be awake and Claude Desktop open</td></tr>
+        <tr><td>Claude can't find my files</td><td>Check you selected the right folder when starting the task</td></tr>
+        <tr><td>Output doesn't look right</td><td>Give specific feedback: "Change X to Y" — don't start over</td></tr>
+        <tr><td>Chrome connector not working</td><td>Must use Haiku 4.5, Sonnet 4.5, or Opus 4.5 model</td></tr>
+      </table>
+    </div>
+
+    <div class="lesson">
+      <h3><span class="icon">🛡️</span> Safety Reminders</h3>
+      <ul>
+        <li>Claude only sees folders you explicitly share</li>
+        <li>Claude asks permission before deleting any files</li>
+        <li>Conversation history stays on your computer</li>
+        <li>You can watch and redirect Claude at any time</li>
+        <li>This is a research preview — avoid using for sensitive financial documents or regulated work until it exits preview</li>
+      </ul>
+    </div>
+
+    <div class="lesson">
+      <h3><span class="icon">📚</span> Where to Learn More</h3>
+      <ul>
+        <li><strong>Official Help Center:</strong> <a href="https://support.claude.com" style="color: #6c5ce7;">support.claude.com</a></li>
+        <li><strong>Product Page:</strong> <a href="https://claude.com/product/cowork" style="color: #6c5ce7;">claude.com/product/cowork</a></li>
+        <li><strong>Plugin Directory:</strong> <a href="https://claude.com/plugins" style="color: #6c5ce7;">claude.com/plugins</a></li>
+        <li><strong>Scheduled Tasks Guide:</strong> support.claude.com → search "schedule recurring tasks"</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="course-footer">
+    Course created February 26, 2026. Claude Cowork is a rapidly evolving product — features may change.<br>
+    Check <a href="https://support.claude.com" style="color: #6c5ce7;">support.claude.com</a> for the latest information.
+  </div>
+</div>
+
+<script>
+function showDay(num) {
+  document.querySelectorAll('.day-content').forEach(function(d) { d.classList.remove('active'); });
+  document.querySelectorAll('.day-tab').forEach(function(t) { t.classList.remove('active'); });
+  document.getElementById('day' + num).classList.add('active');
+  document.querySelectorAll('.day-tab')[num - 1].classList.add('active');
+  window.scrollTo({ top: document.querySelector('.day-nav').offsetTop - 10, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
