@@ -2,7 +2,7 @@
 
 A hands-on, 3-day training course for non-technical users learning to use Claude Cowork.
 
-**Live site:** https://ajayuppaluri-mattermost.github.io/Claude-test-environment/
+**Live site:** https://ajayuppaluri-mattermost.github.io/Clade-cowork-training/
 
 ## Overview
 
